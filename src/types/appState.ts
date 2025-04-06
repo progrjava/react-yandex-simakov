@@ -1,5 +1,3 @@
-import { IModel } from "./model";
-
 /**
  * Тип модального окна
  */
@@ -33,7 +31,7 @@ export interface IAppState {
  * @method setValidationErrors - установить список ошибок валидации форм
  * @param {string[]} errors - список ошибок
  */
-export interface IAppStateModel extends IModel<IAppState> {
+export interface IAppStateModel {
     openModal(modal: ModalType): void;
     closeModal(): void;
     setValidationErrors(errors: string[]): void;

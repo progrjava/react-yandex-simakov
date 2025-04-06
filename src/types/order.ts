@@ -1,5 +1,3 @@
-import { IModel } from "./model";
-
 /**
  * Тип способа оплаты
  */
@@ -14,11 +12,23 @@ export type PaymentMethod = 'online' | 'offline';
  * @property {string} phone - номер телефона
  */
 export interface IOrderData {
-    payment: PaymentMethod;
+    payment: PaymentMethod | null;
     address: string;
     email: string;
     phone: string;
 }
+
+/**
+ * Тип для ошибок валидации полей формы заказа
+ *
+ * @property {string} payment - ошибка валидации способа оплаты
+ * @property {string} address - ошибка валидации адреса доставки
+ * @property {string} email - ошибка валидации электронной почты
+ * @property {string} phone - ошибка валидации номера телефона
+ */
+export type FormErrors = {
+    [K in keyof IOrderData]: K extends 'payment' ? string : string;
+};
 
 /**
  * Интерфейс для модели заказа
@@ -33,9 +43,9 @@ export interface IOrderData {
  * @method validateEmail - проверяет валидность электронной почты
  * @method validatePhone - проверяет валидность номера телефона
  */
-export interface IOrderModel extends IModel<IOrderData> {
-    validatePayment(): boolean;
-    validateAddress(): boolean;
-    validateEmail(): boolean;
-    validatePhone(): boolean;
+export interface IOrderModel {
+    validatePayment(): void;
+    validateAddress(): void;
+    validateEmail(): void;
+    validatePhone(): void;
 };

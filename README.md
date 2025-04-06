@@ -50,13 +50,14 @@ yarn build
 Приложение построено по MVP-архитектуре (событийно-ориентированная, с помощью брокера событий - EventEmitter).
 
 ### Model - классы, отвечающие за модель данных
+- Model (базовый класс)
 - CatalogModel
 - BasketModel
 - OrderModel
 - AppStateModel
 
 ### View - классы, отвечающие за отображение данных
-- View - базовый класс
+- View (базовый класс)
 - PageView
 - ProductPreviewView
 - SuccessView
@@ -95,23 +96,28 @@ EventEmitter - это класс, который позволяет обмени
 разрешая компонентам не знать о существовании друг друга.
 
 EventEmitter - это классическая реализация брокера событий. 
-Он обеспечивает три основных метода: on() - для регистрации обработчика,
-emit() - для отправки события, off() - для снятия обработчика.
+Он обеспечивает три основных метода: `on()` - для регистрации обработчика,
+`emit()` - для отправки события, `off()` - для снятия обработчика.
 
 ### View
 View - это абстрактный класс, который обеспечивает работу с отображением.
 
 Он имеет следующие методы:
-- render(data?: T): HTMLElement - абстрактный метод, который
-  отображает данные на странице.
-- toggleClass(element: HTMLElement | string, className: string, force?: boolean)
-  - переключает CSS-класс на элементе.
-- setText(element: HTMLElement | string, value: unknown) -
-  изменяет текстовое содержимое элемента.
-- setImage(element: HTMLImageElement | string, src: string, alt?: string) -
-  изменяет изображение на странице.
+- `render(data?: T): HTMLElement` - абстрактный метод, который отображает данные на странице.
+- `toggleClass(element: HTMLElement | string, className: string, force?: boolean)` - переключает CSS-класс на элементе.
+- `setText(element: HTMLElement | string, value: unknown)` - изменяет текстовое содержимое элемента.
+- `setImage(element: HTMLImageElement | string, src: string, alt?: string)` - изменяет изображение на странице.
 
 View - это класс, который необходимо наследовать при создании классов отображения.
+
+### Model
+Model - это абстрактный класс, который обеспечивает работу с данными. 
+Он содержит приватное свойство `_data` для хранения данных и приватное свойство `_events` для работы с событиями. 
+
+В классе Model есть следующие методы:
+- `emitEvent(eventName: string, data?: object)`: инициирует событие
+- `updateData(updater: (currentData: T) => T)`: обновляет данные модели
+- `get data(): T`: возвращает данные модели
 
 
 ## Типы данных
@@ -172,8 +178,9 @@ interface IAppStateModel extends IModel<IAppState> {
  * @property {string} id - уникальный идентификатор товара
  * @property {string} title - наименование товара
  * @property {number} price - цена товара
+ * @property {boolean} inBasket - флаг, указывающий, есть ли товар в корзине
  */
-interface IBasketItem extends Pick<IProduct, 'id' | 'title' | 'price'> {};
+interface IBasketItem extends Pick<IProduct, 'id' | 'title' | 'price' | 'inBasket'> {};
 ```
 
 ### IBasketModel
@@ -187,7 +194,7 @@ interface IBasketItem extends Pick<IProduct, 'id' | 'title' | 'price'> {};
  * @param {string} id - уникальный идентификатор элемента корзины
  * @property {number} total - общая сумма корзины
  */
-interface IBasketModel extends IModel<IBasketItem[]> {
+interface IBasketModel {
     addItem(item: IBasketItem): void;
     removeItem(id: string): void;
     get total(): number;
@@ -233,23 +240,6 @@ enum Events {
 };
 ```
 
-### IModel<T>
-```typescript
-/**
- * Интерфейс для модели данных
- *
- * @property {T} data - свойства модели, доступные для чтения
- * @method update - обновляет свойства модели
- * @param {Partial<T>} data - новые значения свойств модели
- * @method reset - сбрасывает свойства модели до начальных значений
- */
-interface IModel<T> {
-    get data(): T;
-    update(data: Partial<T>): void;
-    reset(): void;
-}
-```
-
 ### PaymentMethod
 ```typescript
 /**
@@ -276,6 +266,21 @@ interface IOrderData {
 }
 ```
 
+### FormErrors
+```typescript
+/**
+ * Тип для ошибок валидации полей формы заказа
+ *
+ * @property {string} payment - ошибка валидации способа оплаты
+ * @property {string} address - ошибка валидации адреса доставки
+ * @property {string} email - ошибка валидации электронной почты
+ * @property {string} phone - ошибка валидации номера телефона
+ */
+export type FormErrors = {
+    [K in keyof IOrderData]: K extends 'payment' ? string : string;
+};
+```
+
 ### IOrderModel
 ```typescript
 /**
@@ -291,7 +296,7 @@ interface IOrderData {
  * @method validateEmail - проверяет валидность электронной почты
  * @method validatePhone - проверяет валидность номера телефона
  */
-interface IOrderModel extends IModel<IOrderData> {
+interface IOrderModel {
     validatePayment(): boolean;
     validateAddress(): boolean;
     validateEmail(): boolean;
@@ -339,14 +344,13 @@ interface IProduct {
 ### ICatalogModel
 ```typescript
 /**
- * Интерфейс для модели каталога товаров
+ * Интерфейс для модели списка товаров
  *
- * @property {IProduct[]} data - список товаров
- * @method loadProducts - загрузка списка товаров
- * @returns {Promise<IProduct[]>} - промис, возвращающий список товаров
+ * @method loadProducts - загрузить список товаров
+ * @returns {Promise<void>} - промис, который разрешается после загрузки списка товаров
  */
-interface ICatalogModel extends IModel<IProduct[]> {
-    loadProducts(): Promise<IProduct[]>;
+export interface ICatalogModel {
+    loadProducts(): Promise<void>;
 }
 ```
 

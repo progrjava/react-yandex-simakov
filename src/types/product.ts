@@ -1,4 +1,4 @@
-import { IModel } from "./model";
+import { Model } from '../components/models/base/Model';
 
 /**
  * Тип категории товара
@@ -32,13 +32,13 @@ export interface IProduct {
     inBasket: boolean;
 }
 
+
 /**
- * Интерфейс для модели каталога товаров
+ * Интерфейс для модели списка товаров
  *
- * @property {IProduct[]} data - список товаров
- * @method loadProducts - загрузка списка товаров
- * @returns {Promise<IProduct[]>} - промис, возвращающий список товаров
+ * @method loadProducts - загрузить список товаров
+ * @returns {Promise<void>} - промис, который разрешается после загрузки списка товаров
  */
-export interface ICatalogModel extends IModel<IProduct[]> {
-    loadProducts(): Promise<IProduct[]>;
+export interface ICatalogModel {
+    loadProducts(): Promise<void>;
 }

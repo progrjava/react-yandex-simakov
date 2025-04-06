@@ -1,4 +1,3 @@
-import { IModel } from "./model";
 import { IProduct } from "./product";
 
 /**
@@ -8,7 +7,7 @@ import { IProduct } from "./product";
  * @property {string} title - наименование товара
  * @property {number} price - цена товара
  */
-export interface IBasketItem extends Pick<IProduct, 'id' | 'title' | 'price'> {};
+export interface IBasketItem extends Pick<IProduct, 'id' | 'title' | 'price' | 'inBasket'> {};
 
 /**
  * Интерфейс для модели корзины
@@ -19,7 +18,7 @@ export interface IBasketItem extends Pick<IProduct, 'id' | 'title' | 'price'> {}
  * @param {string} id - уникальный идентификатор элемента корзины
  * @property {number} total - общая сумма корзины
  */
-export interface IBasketModel extends IModel<IBasketItem[]> {
+export interface IBasketModel {
     addItem(item: IBasketItem): void;
     removeItem(id: string): void;
     get total(): number;
