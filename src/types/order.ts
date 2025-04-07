@@ -33,19 +33,20 @@ export type FormErrors = {
 /**
  * Интерфейс для модели заказа
  *
- * @property {PaymentMethod} data.payment - способ оплаты
- * @property {string} data.address - адрес доставки
- * @property {string} data.email - электронная почта
- * @property {string} data.phone - номер телефона
- *
  * @method validatePayment - проверяет валидность способа оплаты
  * @method validateAddress - проверяет валидность адреса доставки
  * @method validateEmail - проверяет валидность электронной почты
  * @method validatePhone - проверяет валидность номера телефона
+ * @method validateDeliveryForm - проверяет валидность формы доставки
+ * @method validateContactsForm - проверяет валидность формы контактов
+ * @method reset - сбрасывает данные форм
  */
 export interface IOrderModel {
     validatePayment(): void;
     validateAddress(): void;
     validateEmail(): void;
     validatePhone(): void;
+    validateDeliveryForm(): boolean;
+    validateContactsForm(): boolean;
+    reset(): void;
 };

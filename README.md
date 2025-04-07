@@ -135,38 +135,18 @@ type ModalType =
     | 'success';
 ```
 
-### IAppState
-```typescript
-/**
- * Интерфейс для хранения состояния приложения
- *
- * @property {ModalType | null} activeModal - тип активного модального окна
- * @property {string[]} validationErrors - список ошибок валидации форм
- */
-interface IAppState {
-    activeModal: ModalType | null;
-    validationErrors: string[];
-}
-```
-
 ### IAppStateModel
 ```typescript
 /**
  * Интерфейс для модели состояния приложения
- *
- * @property {ModalType | null} data.activeModal - тип активного модального окна
- * @property {string[]} data.validationErrors - список ошибок валидации форм
- *
  * @method openModal - открыть модальное окно
  * @param {ModalType} modal - тип модального окна
+ * 
  * @method closeModal - закрыть модальное окно
- * @method setValidationErrors - установить список ошибок валидации форм
- * @param {string[]} errors - список ошибок
  */
-interface IAppStateModel extends IModel<IAppState> {
+export interface IAppStateModel {
     openModal(modal: ModalType): void;
     closeModal(): void;
-    setValidationErrors(errors: string[]): void;
 }
 ```
 
@@ -193,10 +173,12 @@ interface IBasketItem extends Pick<IProduct, 'id' | 'title' | 'price' | 'inBaske
  * @method removeItem - удаляет элемент из корзины
  * @param {string} id - уникальный идентификатор элемента корзины
  * @property {number} total - общая сумма корзины
+ * @method clear - очищает корзину
  */
-interface IBasketModel {
+export interface IBasketModel {
     addItem(item: IBasketItem): void;
     removeItem(id: string): void;
+    clear(): void;
     get total(): number;
 };
 ```
@@ -286,21 +268,22 @@ export type FormErrors = {
 /**
  * Интерфейс для модели заказа
  *
- * @property {PaymentMethod} data.payment - способ оплаты
- * @property {string} data.address - адрес доставки
- * @property {string} data.email - электронная почта
- * @property {string} data.phone - номер телефона
- *
  * @method validatePayment - проверяет валидность способа оплаты
  * @method validateAddress - проверяет валидность адреса доставки
  * @method validateEmail - проверяет валидность электронной почты
  * @method validatePhone - проверяет валидность номера телефона
+ * @method validateDeliveryForm - проверяет валидность формы доставки
+ * @method validateContactsForm - проверяет валидность формы контактов
+ * @method reset - сбрасывает данные форм
  */
-interface IOrderModel {
-    validatePayment(): boolean;
-    validateAddress(): boolean;
-    validateEmail(): boolean;
-    validatePhone(): boolean;
+export interface IOrderModel {
+    validatePayment(): void;
+    validateAddress(): void;
+    validateEmail(): void;
+    validatePhone(): void;
+    validateDeliveryForm(): boolean;
+    validateContactsForm(): boolean;
+    reset(): void;
 };
 ```
 
@@ -370,10 +353,8 @@ OrderModel - класс, который отвечает за хранение �
 ### 4. AppStateModel
 AppStateModel - это класс, который хранит информацию о текущем состоянии приложения. Он имеет следующие свойства и методы:
 - activeModal - свойство, которое хранит тип активного модального окна.
-- errors - свойство, которое хранит ошибки валидации.
 - openModal(type: ModalType) - метод, который открывает модальное окно с указанным типом.
 - closeModal() - метод, который закрывает все модальные окна.
-- setValidationErrors(errors: string[]) - метод, который обновляет ошибки валидации.
 
 
 ## Отображение данных

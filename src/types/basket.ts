@@ -17,10 +17,12 @@ export interface IBasketItem extends Pick<IProduct, 'id' | 'title' | 'price' | '
  * @method removeItem - удаляет элемент из корзины
  * @param {string} id - уникальный идентификатор элемента корзины
  * @property {number} total - общая сумма корзины
+ * @method clear - очищает корзину
  */
 export interface IBasketModel {
     addItem(item: IBasketItem): void;
     removeItem(id: string): void;
+    clear(): void;
     get total(): number;
 };
 

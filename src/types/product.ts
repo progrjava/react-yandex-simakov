@@ -1,5 +1,3 @@
-import { Model } from '../components/models/base/Model';
-
 /**
  * Тип категории товара
  */
