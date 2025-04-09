@@ -1,7 +1,7 @@
 /**
  * Тип способа оплаты
  */
-export type PaymentMethod = 'online' | 'offline';
+export type PaymentMethod = 'card' | 'cash';
 
 /**
  * Интерфейс для представления данных заказа
@@ -46,7 +46,7 @@ export interface IOrderModel {
     validateAddress(): void;
     validateEmail(): void;
     validatePhone(): void;
-    validateDeliveryForm(): boolean;
-    validateContactsForm(): boolean;
+    validateDeliveryForm(): void;
+    validateContactsForm(): void;
     reset(): void;
 };

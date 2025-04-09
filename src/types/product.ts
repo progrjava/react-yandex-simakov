@@ -27,7 +27,6 @@ export interface IProduct {
     description: string;
     image: string;
     price: number;
-    inBasket: boolean;
 }
 
 
@@ -36,7 +35,13 @@ export interface IProduct {
  *
  * @method loadProducts - загрузить список товаров
  * @returns {Promise<void>} - промис, который разрешается после загрузки списка товаров
+ * 
+ * @method getProductById - загрузить данные товара по id
+ * @param {string} id - id товара
+ * @returns {Promise<void>} - промис, который разрешается после загрузки товара
  */
 export interface ICatalogModel {
     loadProducts(): Promise<void>;
+    getProductById(id: string): Promise<void>;
 }
+
