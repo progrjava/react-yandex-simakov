@@ -69,10 +69,11 @@ yarn build
 - ProductInBasketView
 
 ### Presenter - классы, обеспечивающие связь между Model и View
-- HeaderPresenter
-- CatalogPresenter
 - BasketPresenter
+- CatalogPresenter
+- ModalPresenter
 - OrderPresenter
+- PostOrderPresenter
 
 
 ## Базовые классы
@@ -115,6 +116,7 @@ EventEmitter - это классическая реализация брокер
 
 Конструктор:
 - принимает начальные данные и объект событий, которые сохраняются в соответствующих свойствах.
+
 Методы:
 - `emitEvent` (protected): инициирует событие с переданным именем и данными.
 - `updateData` (protected): обновляет данные модели с использованием функции обновления.
@@ -130,9 +132,8 @@ EventEmitter - это классическая реализация брокер
  * @property {string} id - уникальный идентификатор товара
  * @property {string} title - наименование товара
  * @property {number} price - цена товара
- * @property {boolean} inBasket - флаг, указывающий, есть ли товар в корзине
  */
-interface IBasketItem extends Pick<IProduct, 'id' | 'title' | 'price'> {};
+export interface IBasketItem extends Pick<IProduct, 'id' | 'title' | 'price'> {};
 ```
 
 ### IBasketModel
@@ -178,7 +179,7 @@ export enum Events {
     CONTACTS_EMAIL_CHANGE = 'contacts:email-change', // Изменение email
     CONTACTS_PHONE_CHANGE = 'contacts:phone-change', // Изменение телефона
 
-    ORDER_DELIVERY_FORM_VALID = 'order:order-form-valid', // Форма доставки валидна
+    ORDER_DELIVERY_FORM_VALID = 'order:delivery-form-valid', // Форма доставки валидна
     ORDER_DELIVERY_FORM_OPEN = 'order:order-form-open', // Форма доставки открыта
     ORDER_CONTACTS_FORM_VALID = 'order:contacts-form-valid', // Форма контактов валидна
     ORDER_CONTACTS_FORM_OPEN = 'order:contacts-form-open', // Форма контактов открыта
@@ -191,7 +192,8 @@ export enum Events {
     ORDER_SUCCESS = 'order:success', // Заказ оформлен
     ORDER_RESET  = 'order:reset', // Сброс состояния заказа
 
-    FORM_ERROR = 'form:error', // Ошибка валидации формы
+    DELIVERY_FORM_ERROR = 'delivery-form:error', // Ошибка валидации формы доставки
+    CONTACTS_FORM_ERROR = 'contacts-form:error', // Ошибка валидации формы доставки
     API_ERROR = 'api:error' // Ошибка взаимодействия с API
 };
 ```
@@ -201,7 +203,7 @@ export enum Events {
 /**
  * Тип способа оплаты
  */
-type PaymentMethod = 'online' | 'offline';
+export type PaymentMethod = 'card' | 'cash';
 ```
 
 ### IOrderData
@@ -214,11 +216,25 @@ type PaymentMethod = 'online' | 'offline';
  * @property {string} email - электронная почта
  * @property {string} phone - номер телефона
  */
-interface IOrderData {
-    payment: PaymentMethod;
+export interface IOrderData {
+    payment: PaymentMethod | null;
     address: string;
     email: string;
     phone: string;
+}
+```
+
+### IOrderFullData
+```typescript
+/**
+ * Интерфейс для представления полных данных заказа
+ *
+ * @property {string[]} items - массив id товаров
+ * @property {number} total - общая стоимость заказа
+ */
+export interface IOrderFullData extends IOrderData {
+    items: string[];
+    total: number;
 }
 ```
 
@@ -251,12 +267,12 @@ export type FormErrors = {
  * @method reset - сбрасывает данные форм
  */
 export interface IOrderModel {
-    validatePayment(): void;
-    validateAddress(): void;
-    validateEmail(): void;
-    validatePhone(): void;
-    validateDeliveryForm(): boolean;
-    validateContactsForm(): boolean;
+    validatePayment(): boolean;
+    validateAddress(): boolean;
+    validateEmail(): boolean;
+    validatePhone(): boolean;
+    validateDeliveryForm(): void;
+    validateContactsForm(): void;
     reset(): void;
 };
 ```
@@ -304,14 +320,9 @@ interface IProduct {
  *
  * @method loadProducts - загрузить список товаров
  * @returns {Promise<void>} - промис, который разрешается после загрузки списка товаров
- * 
- * @method getProductById - загрузить данные товара по id
- * @param {string} id - id товара
- * @returns {Promise<void>} - промис, который разрешается после загрузки товара
  */
 export interface ICatalogModel {
     loadProducts(): Promise<void>;
-    getProductById(id: string): Promise<void>;
 }
 ```
 
@@ -367,41 +378,155 @@ HeaderView - это класс, отвечающий за отображение
 
 
 ## Презентеры
-### 1. HeaderPresenter
-HeaderPresenter - это класс, который работает с моделью корзины и представлением шапки сайта. Он содержит следующие свойства:
-- `model`: объект типа `IBasketModel`;
-- `view`: объект типа `HeaderView`;
-- `events`: объект типа `EventEmitter`, который используется для обмена событиями между моделью и представлением.
+### 1. BasketPresenter
+#### Назначение:
+Управляет отображением корзины товаров, синхронизирует данные модели (`BasketModel`) с представлениями (`BasketView`, `HeaderView`), обрабатывает события добавления/удаления товаров.
+#### Основные функции:
+##### Подписка на события:
+- Реагирует на обновление корзины (`BASKET_UPDATE`).
+- Удаляет товар при событии `PRODUCT_REMOVED`.
+##### Обновление корзины (`changeBasket`):
+- Обновляет счетчик товаров в шапке (HeaderView).
+- Рендерит список товаров через ProductInBasketView.
+- Отображает итоговую сумму.
+##### Удаление товара (`removeProduct`):
+- Удаляет товар из модели (BasketModel).
+- Открывает корзину после удаления (BASKET_OPEN).
+#### Зависимости:
+- `EventEmitter` — обработка событий.
+- `BasketModel` — хранение данных корзины.
+- `BasketView`, `HeaderView` — отображение состояния.
+- `ProductInBasketView` — рендер карточки товара в корзине.
 
 ### 2. CatalogPresenter
-CatalogPresenter - это класс, который работает с моделью каталога и представлением тела страницы.
-Он содержит следующие свойства:
-- `model`: объект типа `ICatalogModel`;
-- `view`: объект типа `PageView`;
-- `events`: аналогично.
+#### Назначение:
+Управляет отображением каталога товаров, синхронизирует данные модели (`CatalogModel`) с представлением (`PageView`), обрабатывает события загрузки и отображения товаров.
+#### Основные функции:
+##### Подписка на события:
+- Реагирует на загрузку каталога (`CATALOG_LOADED`).
+##### Загрузка каталога (`loadCatalog`):
+- Получает данные товаров из модели (`CatalogModel`).
+- Создает карточки товаров (`ProductView`) на основе шаблона.
+- Обновляет галерею товаров в `PageView`.
+#### Зависимости:
+- `EventEmitter` — обработка событий.
+- `CatalogModel` — хранение данных каталога.
+- `PageView` — представление страницы с галереей товаров.
+- `ProductView` — рендер карточки товара.
+#### События:
+- `CATALOG_LOADED` — после загрузки данных каталога.
+- `PRODUCT_PREVIEW` — при клике на карточку товара.
 
-### 3. BasketPresenter
-BasketPresenter - это класс, который работает с моделью корзины и представлениями корзины и модального окна.
-Он содержит следующие свойства:
-- `model`: объект типа `IBasketModel`;
-- `basketView`: объект типа `BasketView`;
-- `modalView`: объект типа `ModalView`;
-- `events`: аналогично.
+### 3. ModalPresenter
+#### Назначение:
+Управляет модальными окнами приложения, включая превью товаров, корзину и формы оформления заказа. Связывает модели (`BasketModel`, `OrderModel`) с представлениями (`ModalView`, `BasketView`, `DeliveryFormView`, `ContactsFormView`), обрабатывает пользовательские действия через события.
+#### Основные функции:
+##### Подписка на события:
+- `BASKET_OPEN` – открывает корзину.
+- `PRODUCT_PREVIEW` – показывает превью товара.
+- `MODAL_OPEN/MODAL_CLOSE` – управляет видимостью модального окна.
+- `ORDER_DELIVERY_FORM_OPEN` – открывает форму доставки.
+- `ORDER_DELIVERY_FORM_SUBMIT` – переключает на форму контактов.
+##### Открытие корзины (`openBasket`):
+- Рендерит содержимое корзины (`BasketView`).
+- Проверяет наличие товаров перед отображением.
+##### Превью товара (`showProductPreview`):
+- Создает карточку товара (`ProductView`) с возможностью добавления/удаления из корзины.
+- Обновляет текст кнопки ("В корзину"/"Удалить") в зависимости от состояния.
+##### Управление модальным окном (`changeModal`):
+- Блокирует/разблокирует страницу (`PageView`) при открытии/закрытии модалки.
+##### Рендер форм (`renderForm`):
+- Отображает форму доставки или контактов на основе переданного типа.
+- Подгружает сохраненные данные из OrderModel.
+#### Зависимости:
+- `EventEmitter` – обработка событий.
+- `BasketModel` – данные корзины.
+- `OrderModel` – данные заказа.
+- `ModalView` – базовое модальное окно.
+- `BasketView` – содержимое корзины.
+- `DeliveryFormView` / `ContactsFormView` – формы оформления.
+- `ProductView` – карточка товара.
+#### События:
+- Все события из `Events` (импортированные).
+- Генерирует события при взаимодействии с товарами (`PRODUCT_PREVIEW`).
 
 ### 4. OrderPresenter
-OrderPresenter - это класс, который работает с моделью заказа и представлениями формы и модального окна.
-Он содержит следующие свойства:
-- `model`: объект типа `IOrderModel`;
-- `deliveryView`: объект типа `DeliveryFormView`;
-- `contactsView`: объект типа `ContactsFormView`;
-- `modalView`: объект типа `ModalView`;
-- `events`: аналогично.
+#### Назначение:
+Управляет процессом оформления заказа, включая валидацию и обработку данных форм доставки и контактов. Связывает модель заказа (`OrderModel`) с представлениями форм (`DeliveryFormView`, `ContactsFormView`), обрабатывает изменения полей и ошибки валидации.
+#### Основные функции:
+##### Подписка на события:
+Обрабатывает 3 группы событий через регулярные выражения:
+###### 1. Изменение данных заказа (`order|contacts:*-change`):
+- `order:payment-change` – выбор способа оплаты.
+- `order:address-change` – ввод адреса доставки.
+- `contacts:email-change` / `contacts:phone-change` – изменение контактных данных.
+###### 2. Ошибки валидации (`delivery|contacts-form:error`):
+- `DELIVERY_FORM_ERROR` – ошибки в форме доставки.
+- `CONTACTS_FORM_ERROR` – ошибки в форме контактов.
+###### 3. Успешная валидация (`order:*-form-valid`):
+- `ORDER_DELIVERY_FORM_VALID` – форма доставки корректна.
+- `ORDER_CONTACTS_FORM_VALID` – форма контактов корректна.
+##### Обработка данных (`changeOrder`):
+- Обновляет данные в `OrderModel` (адрес, оплата, email, телефон).
+- При изменении способа оплаты (`payment`) приводит значение к типу `PaymentMethod`.
+##### Отображение ошибок (`changeErrors`):
+- Показывает ошибки валидации для активной формы (доставка/контакты).
+- Объединяет несколько ошибок в одну строку (через пробел).
+##### Валидация формы (`formValid`):
+- Сбрасывает ошибки и помечает форму как корректную.
+#### Зависимости:
+- `EventEmitter` – обработка событий.
+- `OrderModel` – хранение данных заказа.
+- `DeliveryFormView` – форма доставки.
+- `ContactsFormView` – форма контактов.
+
+### 5. PostOrderPresenter
+#### Назначение:
+Отвечает за отправку данных заказа на сервер и обработку результата. После успешного оформления заказа очищает корзину (`BasketModel`) и сбрасывает данные заказа (`OrderModel`), а также отображает модальное окно с подтверждением.
+#### Основные функции:
+##### Подписка на события:
+- Реагирует на отправку формы контактов (`ORDER_CONTACTS_FORM_SUBMIT`).
+##### Отправка заказа (`postOrder`):
+###### 1. Формирует данные заказа:
+- Список ID товаров из корзины (`items`).
+- Общую сумму (`total`).
+- Данные из `OrderModel` (способ оплаты, адрес, email, телефон).
+###### 2. Отправляет запрос на сервер:
+- Использует метод post `API` (/order).
+###### 3. Обрабатывает успешный ответ:
+- Отображает модальное окно с подтверждением (`SuccesView`).
+- Очищает корзину (`BasketModel`.clear()).
+- Сбрасывает данные заказа (`OrderModel`.reset()).
+#### Зависимости:
+- `EventEmitter` – обработка событий.
+- `BasketModel` – данные корзины.
+- `OrderModel` – данные заказа.
+- `ModalView` – модальное окно.
+- `Api` – взаимодействие с сервером.
+- `SuccesView` – представление успешного оформления заказа.
 
 ## Интеграция
 В файле index.ts создается экземпляр класса App, который инициализирует приложение.
-В классе App создается 
-- экземпляр класса EventEmitter, который используется для отправки и приема событий;
-- экземпляр класса Api, который используется для работы с API;
-- экземпляры моделей, которые хранят данные;
-- экземпляры представлений, которые отвечают за отображение данных на странице;
-- экземпляры презентеров, которые реализуют логику работы с моделью и представлением;
+### Назначение:
+Главный класс приложения, который инициализирует все компоненты системы (модели, представления, презентеры) и связывает их между собой. Выступает точкой входа в приложение.
+### Структура:
+#### Основные компоненты (core):
+- `EventEmitter`
+- `Api`
+#### Модели (models):
+- `BasketModel`
+- `CatalogModel`
+- `OrderModel`
+#### Представления (views):
+- `HeaderView`
+- `PageView`
+- `ModalView`
+- `BasketView`
+- `DeliveryFormView` 
+- `ContactsFormView`
+#### Презентеры (presenters):
+- `ModalPresenter`
+- `CatalogPresenter`
+- `BasketPresenter`
+- `OrderPresenter`
+- `PostOrderPresenter`

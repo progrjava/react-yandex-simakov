@@ -66,7 +66,7 @@ class App {
     private initModels() {
         this._models = {
             basket: new BasketModel(this._events),
-            catalog: new CatalogModel(this._events),
+            catalog: new CatalogModel(this._api, this._events),
             order: new OrderModel(this._events)
         };
     }

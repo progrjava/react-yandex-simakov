@@ -9,6 +9,17 @@ import { SuccesView } from "../components/views/SuccesView";
 import { cloneTemplate } from "../utils/utils";
 
 export class PostOrderPresenter {
+    /**
+     * @class
+     * @classdesc Presenter для отправки заказа на сервер
+     * @param {HTMLTemplateElement} _successTemplate - template для success-окна
+     * @param {BasketModel} _basketModel - модель корзины
+     * @param {OrderModel} _orderModel - модель заказа
+     * @param {ModalView} _modalView - представление модального окна
+     * @param {EventEmitter} _events - эмиттер событий
+     * @param {Api} _api - API для отправки заказа
+     * @constructor
+     */
     constructor(
         private _successTemplate: HTMLTemplateElement,
         private _basketModel: BasketModel,
@@ -20,10 +31,18 @@ export class PostOrderPresenter {
         this.subscribe();
     }
 
+    /**
+     * @method
+     * @description подписывается на событие отправки формы контактов
+     */
     private subscribe(): void {
         this._events.on(Events.ORDER_CONTACTS_FORM_SUBMIT, () => this.postOrder());
     }
 
+    /**
+     * @method
+     * @description отправляет заказ на сервер
+     */
     private postOrder(): void {
         const items = this._basketModel.data.items.map(item => item.id);
         const total = this._basketModel.data.total;

@@ -7,6 +7,14 @@ import { IProduct } from "../types/product";
 import { cloneTemplate } from "../utils/utils";
 
 export class CatalogPresenter {
+    /**
+     * Презентер для отображения списка товаров
+     *
+     * @param {CatalogModel} _catalogModel - модель списка товаров
+     * @param {PageView} _pageView - представление страницы
+     * @param {EventEmitter} _events - объект для работы с событиями
+     * @param {HTMLTemplateElement} _productCatalogTemplate - шаблон для отображения товара
+     */
     constructor(
         private _catalogModel: CatalogModel,
         private _pageView: PageView,
@@ -17,10 +25,16 @@ export class CatalogPresenter {
         this.subscribe();
     }
 
+    /**
+     * Подписывается на события
+     */
     private subscribe(): void {
         this._events.on<IProduct[]>(Events.CATALOG_LOADED, () => this.loadCatalog());         
     }
 
+    /**
+     * Загружает список товаров
+     */
     private loadCatalog(): void {
         const elements = this._catalogModel.data.map((product) => {
             const productCard = new ProductView(
