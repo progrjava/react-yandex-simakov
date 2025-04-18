@@ -5,5 +5,4 @@ dist
 .idea
 .vscode
 *.log
-src/components/models
-src/components/views
+src/presenters

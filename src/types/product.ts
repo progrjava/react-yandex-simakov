@@ -18,7 +18,6 @@ export type Category =
  * @property {string} description - описание товара
  * @property {string} image - URL изображения товара
  * @property {number} price - цена товара
- * @property {boolean} inBasket - флаг добавления товара в корзину
  */
 export interface IProduct {
     id: string;
@@ -42,6 +41,5 @@ export interface IProduct {
  */
 export interface ICatalogModel {
     loadProducts(): Promise<void>;
-    getProductById(id: string): Promise<void>;
 }
 

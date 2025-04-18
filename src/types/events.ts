@@ -19,7 +19,7 @@ export enum Events {
     CONTACTS_EMAIL_CHANGE = 'contacts:email-change', // Изменение email
     CONTACTS_PHONE_CHANGE = 'contacts:phone-change', // Изменение телефона
 
-    ORDER_DELIVERY_FORM_VALID = 'order:order-form-valid', // Форма доставки валидна
+    ORDER_DELIVERY_FORM_VALID = 'order:delivery-form-valid', // Форма доставки валидна
     ORDER_DELIVERY_FORM_OPEN = 'order:order-form-open', // Форма доставки открыта
     ORDER_CONTACTS_FORM_VALID = 'order:contacts-form-valid', // Форма контактов валидна
     ORDER_CONTACTS_FORM_OPEN = 'order:contacts-form-open', // Форма контактов открыта
@@ -32,6 +32,7 @@ export enum Events {
     ORDER_SUCCESS = 'order:success', // Заказ оформлен
     ORDER_RESET  = 'order:reset', // Сброс состояния заказа
 
-    FORM_ERROR = 'form:error', // Ошибка валидации формы
+    DELIVERY_FORM_ERROR = 'delivery-form:error', // Ошибка валидации формы доставки
+    CONTACTS_FORM_ERROR = 'contacts-form:error', // Ошибка валидации формы доставки
     API_ERROR = 'api:error' // Ошибка взаимодействия с API
 };

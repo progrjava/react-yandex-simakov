@@ -19,6 +19,17 @@ export interface IOrderData {
 }
 
 /**
+ * Интерфейс для представления полных данных заказа
+ *
+ * @property {string[]} items - массив id товаров
+ * @property {number} total - общая стоимость заказа
+ */
+export interface IOrderFullData extends IOrderData {
+    items: string[];
+    total: number;
+}
+
+/**
  * Тип для ошибок валидации полей формы заказа
  *
  * @property {string} payment - ошибка валидации способа оплаты
@@ -42,10 +53,10 @@ export type FormErrors = {
  * @method reset - сбрасывает данные форм
  */
 export interface IOrderModel {
-    validatePayment(): void;
-    validateAddress(): void;
-    validateEmail(): void;
-    validatePhone(): void;
+    validatePayment(): boolean;
+    validateAddress(): boolean;
+    validateEmail(): boolean;
+    validatePhone(): boolean;
     validateDeliveryForm(): void;
     validateContactsForm(): void;
     reset(): void;
