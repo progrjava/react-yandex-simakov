@@ -1,3 +1,5 @@
+@import 'src/styles/variables';
+
 .selectWrapper {
   position: relative;
 }
@@ -18,14 +20,14 @@
   height: 50px;
   padding: 15px 17px;
   cursor: pointer;
-  outline: 1px solid #000;
-  background: rgb(255, 255, 255);
+  outline: 1px solid $black;
+  background: $white;
   box-sizing: border-box;
   width: 100%;
 }
 
 .placeholder[data-selected="true"] {
-  color: rgb(0, 0, 0);
+  color: $black;
 }
 
 .selectWrapper[data-is-active="true"] .arrow {
@@ -34,12 +36,12 @@
 }
 
 .selectWrapper[data-is-active="true"] .placeholder {
-  outline: 3px solid #000;
+  outline: 3px solid $black;
 }
 
 .selectWrapper:not([data-is-active="true"])
   .placeholder:not([data-status="invalid"]):hover {
-  outline: 3px solid #000;
+  outline: 1px solid $gold;
 }
 
 .select {
@@ -49,11 +51,11 @@
   width: 100%;
   margin: 0;
   padding: 0;
-  outline: 3px solid #000;
+  outline: 3px solid $black;
   border-top: none;
   box-sizing: border-box;
   z-index: 10;
-  background-color: rgba(255, 255, 255, 1);
+  background-color: $white;
 }
 
 .option {
@@ -65,7 +67,7 @@
   border: 1px;
   padding: 15px 17px;
   cursor: pointer;
-  background-color: rgba(255, 255, 255, 1);
+  background-color: $white;
 }
 
 .option[aria-selected="true"] {
@@ -73,7 +75,11 @@
 }
 
 .option:hover {
-  background: var(--grey, #c4c4c4);
+  background: $light-gray;
+}
+
+.option:active {
+  background: $dark-gray;
 }
 
 @mixin option-color-before {
@@ -85,7 +91,7 @@
 
 .option-black::before {
   @include option-color-before();
-  background-color: #000;
+  background-color: $black;
 }
 
 @mixin option-color-after {
@@ -99,89 +105,89 @@
 
 .option-black[data-selected="true"]::after {
   @include option-color-after();
-  background-color: #ffffff;
+  background-color: $white;
 }
 
 .option-white::before {
   @include option-color-before();
-  background-color: #ffffff;
-  border: 1px solid #000;
+  background-color: $white;
+  border: 1px solid $black;
   box-sizing: border-box;
 }
 
 .option-white[data-selected="true"]::after {
   @include option-color-after();
-  background-color: #000;
+  background-color: $black;
 }
 
 .option-gray::before {
   @include option-color-before();
-  background-color: #c4c4c4;
+  background-color: $option-gray-color;
 }
 
 .option-gray[data-selected="true"]::after {
   @include option-color-after();
-  background-color: #ffffff;
+  background-color: $white;
 }
 
 .option-pink::before {
   @include option-color-before();
-  background-color: #feafe8;
+  background-color: $option-pink-color;
 }
 
 .option-pink[data-selected="true"]::after {
   @include option-color-after();
-  background-color: #ffffff;
+  background-color: $white;
 }
 
 .option-fuchsia::before {
   @include option-color-before();
-  background-color: #fd24af;
+  background-color: $option-fuchsia-color;
 }
 
 .option-fuchsia[data-selected="true"]::after {
   @include option-color-after();
-  background-color: #ffffff;
+  background-color: $white;
 }
 
 .option-yellow::before {
   @include option-color-before();
-  background-color: #ffc802;
+  background-color: $option-yellow-color;
 }
 
 .option-yellow[data-selected="true"]::after {
   @include option-color-after();
-  background-color: #ffffff;
+  background-color: $white;
 }
 
 .option-green::before {
   @include option-color-before();
-  background-color: #80d994;
+  background-color: $option-green-color;
 }
 
 .option-green[data-selected="true"]::after {
   @include option-color-after();
-  background-color: #ffffff;
+  background-color: $white;
 }
 
 .option-blue::before {
   @include option-color-before();
-  background-color: #6fc1fd;
+  background-color: $option-blue-color;
 }
 
 .option-blue[data-selected="true"]::after {
   @include option-color-after();
-  background-color: #ffffff;
+  background-color: $white;
 }
 
 .option-purple::before {
   @include option-color-before();
-  background-color: #5f0dee;
+  background-color: $option-purple-color;
 }
 
 .option-purple[data-selected="true"]::after {
   @include option-color-after();
-  background-color: #ffffff;
+  background-color: $white;
 }
 
 @mixin option-width-before {

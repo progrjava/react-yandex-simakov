@@ -1,3 +1,5 @@
+@import 'src/styles/variables';
+
 .button {
   cursor: pointer;
   display: flex;
@@ -7,13 +9,24 @@
   align-items: center;
   text-align: center;
   box-sizing: border-box;
-  border: 1px solid #000;
+  border: 1px solid $black;
 }
 
-.button:active {
-  background: var(--gold, #ffc802);
+.button[type='reset'] {
+  background-color: $white;
 }
 
-.button:hover {
-  background: var(--gold, #ffc802);
+.button[type='reset']:hover {
+  background-color: $black;
+  div {
+    color: $white;
+  }
+}
+
+.button[type='submit'] {
+  background-color: $sunny;
+}
+
+.button[type='submit']:hover {
+  background-color: $light-yellow;
 }

@@ -1,5 +1,7 @@
+@import 'src/styles/variables';
+
 .separator {
   height: 1px;
   width: 100%;
-  background: #000;
+  background: $black;
 }

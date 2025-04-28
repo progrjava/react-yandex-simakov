@@ -1,7 +1,9 @@
+@import 'src/styles/variables';
+
 .group {
   display: inline-flex;
   box-sizing: border-box;
-  border: 1px solid #000;
+  border: 1px solid $black;
   max-width: fit-content;
 }
 
@@ -29,7 +31,7 @@
   cursor: pointer;
   text-align: center;
   flex-shrink: 0;
-  border-right: 1px solid #000;
+  border-right: 1px solid $black;
 }
 
 /* Убираем бордер у последнего в radiogroup, чтобы не было двойного бордера */
@@ -39,9 +41,9 @@
 
 .label:hover,
 .item[data-checked="true"] .label:hover {
-  background: var(--gold, #ffc802);
+  background: $light-yellow;
 }
 
 .item[data-checked="true"] .label {
-  background: var(--gold, #ffc802);
+  background: $sunny;
 }

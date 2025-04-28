@@ -1,10 +1,12 @@
+@import 'src/styles/variables';
+
 @mixin typography($size: 18, $weight: 400, $family: "Open Sans",) {
     font-family: $family;
     font-size: $size;
     font-weight: $weight;
     line-height: normal;
     letter-spacing: 0em;
-    color: #000;
+    color: $black;
 }
 
 .text {
@@ -87,11 +89,11 @@
 .dynamic {
     font-family: var(--font-family, "Open Sans");
     font-size: var(--font-size, 18px);
-    color: var(--font-color, #000);
+    color: var(--font-color, $black);
 }
 
 // для заголовка и подзаголовка рамер шрифта одинаковый, меняется только цвет и семейство шрифтов
 .dynamicLite {
     font-family: var(--font-family, "Open Sans");
-    color: var(--font-color, #000);
+    color: var(--font-color, $black);
 }

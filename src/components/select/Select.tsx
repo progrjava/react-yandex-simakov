@@ -42,9 +42,11 @@ export const Select = (props: SelectProps) => {
 	const handleOptionClick = (option: OptionType) => {
 		setIsOpen(false);
 		onChange?.(option);
+		event?.stopPropagation();
 	};
 	const handlePlaceHolderClick: MouseEventHandler<HTMLDivElement> = () => {
 		setIsOpen((isOpen) => !isOpen);
+		event?.stopPropagation();
 	};
 
 	return (
