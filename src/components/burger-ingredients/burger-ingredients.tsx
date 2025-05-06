@@ -47,14 +47,15 @@ export const BurgerIngredients: FC = () => {
       titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  return null;
-
   return (
     <BurgerIngredientsUI
       currentTab={currentTab}
-      buns={buns}
+      /*buns={buns}
       mains={mains}
-      sauces={sauces}
+      sauces={sauces}*/
+      buns={[]}
+      mains={[]}
+      sauces={[]}
       titleBunRef={titleBunRef}
       titleMainRef={titleMainRef}
       titleSaucesRef={titleSaucesRef}
