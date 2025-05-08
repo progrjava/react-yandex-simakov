@@ -38,3 +38,8 @@ export type TUser = {
 };
 
 export type TTabMode = 'bun' | 'sauce' | 'main';
+
+export type ProtectedRouteProps = {
+  onlyUnAuth?: boolean;
+  children: React.ReactElement;
+};
