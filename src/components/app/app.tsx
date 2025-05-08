@@ -13,57 +13,146 @@ import '../../index.css';
 import styles from './app.module.css';
 
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
-import { Route, Routes, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { ProtectedRoute } from '../protected-route/protectedRoute';
+
+const modalRoutes = [
+  {
+    path: '/ingredients/:id',
+    title: 'Детали ингредиента',
+    backPath: '/',
+    element: <IngredientDetails />,
+    protected: false
+  },
+  {
+    path: '/feed/:number',
+    title: 'Информация о заказе',
+    backPath: '/feed',
+    element: <OrderInfo />,
+    protected: false
+  },
+  {
+    path: '/profile/orders/:number',
+    title: 'Информация о заказе',
+    backPath: '/profile/orders',
+    element: <OrderInfo />,
+    protected: true
+  }
+];
+
+const protectedRoutes = [
+  { path: '/profile', element: <Profile /> },
+  { path: '/profile/orders', element: <ProfileOrders /> }
+];
+
+const authRoutes = [
+  { path: '/login', element: <Login /> },
+  { path: '/register', element: <Register /> },
+  { path: '/forgot-password', element: <ForgotPassword /> },
+  { path: '/reset-password', element: <ResetPassword /> }
+];
 
 const App = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const backgroundLocation = location.state?.background;
+
+  const renderModalRoute = (
+    path: string,
+    title: string,
+    backPath: string,
+    children: React.ReactNode
+  ) => (
+    <Route
+      path={path}
+      element={
+        <Modal title={title} onClose={() => navigate(backPath)}>
+          {children}
+        </Modal>
+      }
+    />
+  );
+
+  const renderProtectedModalRoute = (
+    path: string,
+    title: string,
+    backPath: string,
+    children: React.ReactNode
+  ) => (
+    <Route
+      path={path}
+      element={
+        <ProtectedRoute>
+          <Modal title={title} onClose={() => navigate(backPath)}>
+            {children}
+          </Modal>
+        </ProtectedRoute>
+      }
+    />
+  );
 
   return (
     <div className={styles.app}>
       <AppHeader />
-      <Routes>
+      <Routes location={backgroundLocation || location}>
         <Route path='/' element={<ConstructorPage />} />
-        <Route path='/feed' element={<Feed />} />
         <Route path='*' element={<NotFound404 />} />
-        <Route
-          path='/feed/:number'
-          element={
-            <Modal
-              title='Информация об оформленном заказе'
-              onClose={() => navigate('/feed')}
-            >
-              <OrderInfo />
-            </Modal>
-          }
-        />
-        <Route
-          path='/ingredients/:id'
-          element={
-            <Modal title='Детали ингредиента' onClose={() => navigate('/')}>
-              <IngredientDetails />
-            </Modal>
-          }
-        />
+        <Route path='/feed' element={<Feed />} />
 
-        {/*TODO: сделать защищенными*/}
-        <Route path='/login' element={<Login />} />
-        <Route path='/register' element={<Register />} />
-        <Route path='/forgot-password' element={<ForgotPassword />} />
-        <Route path='/reset-password' element={<ResetPassword />} />
-        <Route path='/profile' element={<Profile />} />
-        <Route path='/profile/orders' element={<ProfileOrders />} />
-        <Route
-          path='/profile/orders/:number'
-          element={
-            <Modal
-              title='Информация о заказе'
-              onClose={() => navigate('/profile/orders')}
-            >
-              <OrderInfo />
-            </Modal>
-          }
-        />
+        {authRoutes.map((route) => (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={
+              <ProtectedRoute onlyUnAuth>{route.element}</ProtectedRoute>
+            }
+          />
+        ))}
+
+        {protectedRoutes.map((route) => (
+          <Route
+            key={route.path}
+            path={route.path}
+            element={<ProtectedRoute>{route.element}</ProtectedRoute>}
+          />
+        ))}
+
+        {modalRoutes.map((route) =>
+          route.protected
+            ? renderProtectedModalRoute(
+                route.path,
+                route.title,
+                route.backPath,
+                route.element
+              )
+            : renderModalRoute(
+                route.path,
+                route.title,
+                route.backPath,
+                route.element
+              )
+        )}
       </Routes>
+
+      {backgroundLocation && (
+        <Routes>
+          {modalRoutes.map((route) =>
+            route.protected
+              ? renderProtectedModalRoute(
+                  route.path,
+                  route.title,
+                  route.backPath,
+                  route.element
+                )
+              : renderModalRoute(
+                  route.path,
+                  route.title,
+                  route.backPath,
+                  route.element
+                )
+          )}
+        </Routes>
+      )}
     </div>
   );
 };
