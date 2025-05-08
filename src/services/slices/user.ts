@@ -36,7 +36,7 @@ const initialState: UserState = {
   isOrderRequested: false
 };
 
-export const userSlice = createSlice({
+const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
@@ -129,19 +129,22 @@ export const userSlice = createSlice({
   }
 });
 
-export const fetchUser = createAsyncThunk('user/fetch', getUserApi);
-export const login = createAsyncThunk('user/login', loginUserApi);
-export const register = createAsyncThunk('user/register', registerUserApi);
-export const updateUser = createAsyncThunk('user/update', updateUserApi);
-export const logout = createAsyncThunk('user/logout', logoutApi);
-export const fetchUserOrders = createAsyncThunk(
-  'user/orders/fetch',
-  getOrdersApi
-);
-export const createOrder = createAsyncThunk(
-  'user/orders/create',
-  orderBurgerApi
-);
+const fetchUser = createAsyncThunk('user/fetch', getUserApi);
+const login = createAsyncThunk('user/login', loginUserApi);
+const register = createAsyncThunk('user/register', registerUserApi);
+const updateUser = createAsyncThunk('user/update', updateUserApi);
+const logout = createAsyncThunk('user/logout', logoutApi);
+const fetchUserOrders = createAsyncThunk('user/orders/fetch', getOrdersApi);
+const createOrder = createAsyncThunk('user/orders/create', orderBurgerApi);
 
+export {
+  fetchUser,
+  login,
+  register,
+  updateUser,
+  logout,
+  fetchUserOrders,
+  createOrder
+};
 export const { changeAuthStatus, changeLastOrder } = userSlice.actions;
 export const userSliceReducer = userSlice.reducer;

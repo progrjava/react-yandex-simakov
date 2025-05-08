@@ -1,10 +1,7 @@
 import { FC } from 'react';
 import { useSelector } from '../../services/store';
 import { Navigate, useLocation } from 'react-router-dom';
-import {
-  selectIsLoading,
-  selectIsAuthenticated
-} from '../../services/selectors/user';
+import { selectIsLoading, selectIsAuthenticated } from '@selectors';
 import { Preloader } from '@ui';
 import { ProtectedRouteProps } from '@utils-types';
 

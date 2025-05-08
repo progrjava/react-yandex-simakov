@@ -6,10 +6,12 @@ import {
   useSelector as selectorHook
 } from 'react-redux';
 
-import { burgerConstructorSliceReducer } from './slices/burger-constructor';
-import { ingredientsReducer } from './slices/ingredients';
-import { feedsReducer } from './slices/feeds';
-import { userSliceReducer } from './slices/user';
+import { 
+  burgerConstructorSliceReducer,
+  ingredientsReducer,
+  feedsReducer,
+  userSliceReducer
+} from '@slices';
 
 const rootReducer = combineReducers({
   items: burgerConstructorSliceReducer,
