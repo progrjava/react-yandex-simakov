@@ -19,6 +19,9 @@ import {
   ProtectedRoute
 } from '@components';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { useDispatch } from '../../services/store';
+import { useEffect } from 'react';
+import { fetchFeeds, fetchIngredients, fetchUser, fetchUserOrders } from '@slices';
 
 const modalRoutes = [
   {
@@ -59,7 +62,20 @@ const authRoutes = [
 const App = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dispatch = useDispatch();
   const backgroundLocation = location.state?.background;
+
+  useEffect(() => {
+    const initApp = async () => {
+      await Promise.all([
+        dispatch(fetchIngredients()),
+        dispatch(fetchFeeds()),
+        dispatch(fetchUser())
+      ]);
+      dispatch(fetchUserOrders());
+    };
+    initApp();
+  }, [dispatch]);
 
   const renderModalRoute = (
     path: string,
