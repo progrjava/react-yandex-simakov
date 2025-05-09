@@ -21,7 +21,7 @@ export const OrderInfo: FC = () => {
   useEffect(() => {
     dispatch(fetchOrderByNumber(currentNumber));
   }, [currentNumber, dispatch]);
-  
+
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 
@@ -34,9 +34,10 @@ export const OrderInfo: FC = () => {
         if (!acc[item]) {
           const ingredient = ingredients.find((ing) => ing._id === item);
           if (ingredient) {
+            const count = ingredient.type === 'bun' ? 2 : 1;
             acc[item] = {
               ...ingredient,
-              count: 1
+              count: count
             };
           }
         } else {

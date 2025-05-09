@@ -21,12 +21,15 @@ export const BurgerConstructor: FC = () => {
   const ingredients = useSelector(selectConstructorIngredients);
   const isOrderRequested = useSelector(selectIsOrderRequested);
   const lastOrder = useSelector(selectLastOrder);
-  
-  const constructorItems = useMemo(() => ({
-    bun: bun,
-    ingredients: ingredients
-  }), [bun, ingredients]);
-  
+
+  const constructorItems = useMemo(
+    () => ({
+      bun: bun,
+      ingredients: ingredients
+    }),
+    [bun, ingredients]
+  );
+
   const price = useMemo(
     () =>
       (constructorItems.bun ? constructorItems.bun.price * 2 : 0) +
@@ -36,7 +39,7 @@ export const BurgerConstructor: FC = () => {
       ),
     [constructorItems]
   );
-  
+
   const onOrderClick = () => {
     if (!isAuthenticated) {
       return navigate('/login');

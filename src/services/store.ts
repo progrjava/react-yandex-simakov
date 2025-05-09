@@ -6,7 +6,7 @@ import {
   useSelector as selectorHook
 } from 'react-redux';
 
-import { 
+import {
   burgerConstructorSliceReducer,
   ingredientsReducer,
   feedsReducer,

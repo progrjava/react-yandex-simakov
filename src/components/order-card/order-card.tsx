@@ -24,7 +24,12 @@ export const OrderCard: FC<OrderCardProps> = memo(({ order }) => {
       []
     );
 
-    const total = ingredientsInfo.reduce((acc, item) => acc + item.price, 0);
+    const total = ingredientsInfo.reduce(
+      (acc, item) =>
+        item.type === 'bun' ? acc + item.price * 2 : acc + item.price,
+      0
+    );
+
     const ingredientsToShow = ingredientsInfo.slice(0, maxIngredients);
     const remains =
       ingredientsInfo.length > maxIngredients

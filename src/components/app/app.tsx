@@ -11,17 +11,22 @@ import {
 } from '@pages';
 import '../../index.css';
 import styles from './app.module.css';
-import { 
-  AppHeader, 
-  IngredientDetails, 
-  Modal, 
+import {
+  AppHeader,
+  IngredientDetails,
+  Modal,
   OrderInfo,
   ProtectedRoute
 } from '@components';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch } from '../../services/store';
 import { useEffect } from 'react';
-import { fetchFeeds, fetchIngredients, fetchUser, fetchUserOrders } from '@slices';
+import {
+  fetchFeeds,
+  fetchIngredients,
+  fetchUser,
+  fetchUserOrders
+} from '@slices';
 
 const modalRoutes = [
   {
