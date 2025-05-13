@@ -4,7 +4,7 @@ import {
   getFeedsApi,
   getOrderByNumberApi,
   TOrderResponse
-} from '../../utils/burger-api';
+} from '../../../utils/burger-api';
 
 interface FeedsState {
   orders: Array<TOrder>;

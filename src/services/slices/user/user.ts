@@ -9,7 +9,7 @@ import {
   TNewOrderResponse,
   TUserResponse,
   updateUserApi
-} from '../../utils/burger-api';
+} from '../../../utils/burger-api';
 import { TOrder } from '@utils-types';
 
 interface UserState {
