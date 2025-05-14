@@ -147,4 +147,4 @@ export {
   createOrder
 };
 export const { changeAuthStatus, changeLastOrder } = userSlice.actions;
-export const userSliceReducer = userSlice.reducer;
+export const userReducer = userSlice.reducer;

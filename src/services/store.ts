@@ -7,17 +7,17 @@ import {
 } from 'react-redux';
 
 import {
-  burgerConstructorSliceReducer,
+  burgerConstructorReducer,
   ingredientsReducer,
   feedsReducer,
-  userSliceReducer
+  userReducer
 } from '@slices';
 
-const rootReducer = combineReducers({
-  items: burgerConstructorSliceReducer,
+export const rootReducer = combineReducers({
+  items: burgerConstructorReducer,
   ingredients: ingredientsReducer,
   feeds: feedsReducer,
-  user: userSliceReducer
+  user: userReducer
 });
 
 const store = configureStore({
