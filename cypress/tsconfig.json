@@ -6,6 +6,6 @@
   },
   "include": [
     "../node_modules/cypress",
-    "./**/*.ts"
+    "./**/*.tsx"
   ]
 }
